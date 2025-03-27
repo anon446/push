@@ -20,7 +20,7 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{
               "message": {
-                "token": "YOUR_DEVICE_FCM_TOKEN",
+                "token": "fDaXdgCPQQKA-MAMbu-mzo:APA91bF9oiB1MXRQrBUaR9o352p3MimxPxTzgi0MTWJXpm210j9wnbrLADtPTx_zETncB6201Q4nDXhczFaUrxh9MZX9BbMeGF5_xeThpGjDm8t_5xNgBmQ",
                 "notification": {
                   "title": "Weather Alert",
                   "body": "Severe storm approaching your area!"
