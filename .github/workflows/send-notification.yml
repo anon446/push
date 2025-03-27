@@ -9,14 +9,18 @@ jobs:
   send_notification:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Environment
+      - name: Setup Firebase Authentication
         run: |
-          echo "Setting up Firebase authentication"
+          echo '${{ secrets.FIREBASE_CREDENTIALS }}' | base64 --decode > firebase-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=firebase-key.json
+
+          ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
+          echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
       - name: Send Push Notification
         run: |
           curl -X POST "https://fcm.googleapis.com/v1/projects/${{ secrets.FIREBASE_PROJECT_ID }}/messages:send" \
-            -H "Authorization: Bearer $(echo '${{ secrets.FIREBASE_PRIVATE_KEY }}' | base64 --decode | jq -r '.private_key')" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "message": {
