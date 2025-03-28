@@ -1,13 +1,14 @@
-name: Send Firebase Push Notification
+name: Send Firebase Push Notification for Weather Alerts
 
 on:
   schedule:
-    - cron: '*/15 * * * *'  # Run every 15 minutes
+    - cron: '*/15 * * * *'  # Runs every 15 minutes
   workflow_dispatch:  # Allows manual triggering
 
 jobs:
   send_notification:
     runs-on: ubuntu-latest
+
     steps:
       - name: Setup Firebase Authentication
         run: |
@@ -17,17 +18,36 @@ jobs:
           ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
           echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
 
-      - name: Send Push Notification
+      - name: Fetch Weather Data from Tomorrow.io
+        id: fetch_weather
+        run: |
+          response=$(curl -s "https://api.tomorrow.io/v4/weather/forecast?location=YOUR_LOCATION&apikey=${{ secrets.TOMORROW_IO_API_KEY }}")
+          echo "$response" > weather.json
+
+      - name: Check for Severe Weather
+        id: check_weather
+        run: |
+          SEVERE_WEATHER=$(jq -r '.timelines.hourly | map(select(.values.weatherCode >= 5000)) | length' weather.json)
+          if [ "$SEVERE_WEATHER" -gt 0 ]; then
+            echo "Severe weather detected!"
+            echo "send_notification=true" >> $GITHUB_ENV
+          else
+            echo "No severe weather detected."
+            echo "send_notification=false" >> $GITHUB_ENV
+          fi
+
+      - name: Send Push Notification via FCM
+        if: env.send_notification == 'true'
         run: |
           curl -X POST "https://fcm.googleapis.com/v1/projects/${{ secrets.FIREBASE_PROJECT_ID }}/messages:send" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "message": {
-                "token": "fDaXdgCPQQKA-MAMbu-mzo:APA91bF9oiB1MXRQrBUaR9o352p3MimxPxTzgi0MTWJXpm210j9wnbrLADtPTx_zETncB6201Q4nDXhczFaUrxh9MZX9BbMeGF5_xeThpGjDm8t_5xNgBmQ",
+                "token": "${{ secrets.FCM_DEVICE_TOKEN }}",
                 "notification": {
-                  "title": "Weather Alert",
-                  "body": "Severe storm approaching your area!"
+                  "title": "Severe Weather Alert",
+                  "body": "Severe weather conditions detected in your area!"
                 },
                 "android": {
                   "priority": "high"
