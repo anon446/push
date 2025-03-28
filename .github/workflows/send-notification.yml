@@ -27,12 +27,12 @@ jobs:
       - name: Check for Severe Weather
         id: check_weather
         run: |
-          SEVERE_WEATHER=$(jq -r '.timelines.hourly | map(select(.values.weatherCode >= 5000)) | length' weather.json)
-          if [ "$SEVERE_WEATHER" -gt 0 ]; then
-            echo "Severe weather detected!"
+          GOOD_WEATHER=$(jq -r '.timelines.hourly | map(select(.values.weatherCode < 1000)) | length' weather.json)
+          if [ "$GOOD_WEATHER" -gt 0 ]; then
+            echo "Good weather detected!"
             echo "send_notification=true" >> $GITHUB_ENV
           else
-            echo "No severe weather detected."
+            echo "No good weather detected."
             echo "send_notification=false" >> $GITHUB_ENV
           fi
 
@@ -46,8 +46,8 @@ jobs:
               "message": {
                 "token": "${{ secrets.FCM_DEVICE_TOKEN }}",
                 "notification": {
-                  "title": "Severe Weather Alert",
-                  "body": "Severe weather conditions detected in your area!"
+                  "title": "Great Weather Alert",
+                  "body": "The weather is clear and beautiful!"
                 },
                 "android": {
                   "priority": "high"
