@@ -21,7 +21,7 @@ jobs:
       - name: Fetch Weather Data from Tomorrow.io
         id: fetch_weather
         run: |
-          response=$(curl -s "https://api.tomorrow.io/v4/weather/forecast?location=YOUR_LOCATION&apikey=${{ secrets.TOMORROW_IO_API_KEY }}")
+          response=$(curl -s "https://api.tomorrow.io/v4/weather/forecast?location="10.2833,123.9000"&apikey=${{ secrets.TOMORROW_IO_API_KEY }}")
           echo "$response" > weather.json
 
       - name: Check for Severe Weather
