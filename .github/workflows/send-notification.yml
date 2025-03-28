@@ -38,10 +38,10 @@ jobs:
 
          if [ "$NOTIFICATIONS_ENABLED" = "true" ]; then
          echo "Notifications are enabled"
-         echo "send_notification=true" >> $GITHUB_ENV
+         echo "NOTIFICATIONS_ENABLED=true" >> $GITHUB_ENV
          else
          echo "Notifications are disabled"
-         echo "send_notification=false" >> $GITHUB_ENV
+         echo "NOTIFICATIONS_ENABLED=false" >> $GITHUB_ENV
          fi
 
 
