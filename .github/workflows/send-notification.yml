@@ -33,7 +33,7 @@ jobs:
             echo "send_notification=true" >> $GITHUB_ENV
           else
             echo "No good weather detected."
-            echo "send_notification=true" >> $GITHUB_ENV
+            echo "send_notification=false" >> $GITHUB_ENV
           fi
 
       - name: Send Push Notification via FCM
