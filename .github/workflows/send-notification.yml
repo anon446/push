@@ -29,7 +29,7 @@ jobs:
         run: |
           GOOD_WEATHER=$(jq -r '.timelines.hourly[0].values.weatherCode' weather.json)
            echo "Detected Weather Code: $GOOD_WEATHER"
-          if [[ "$GOOD_WEATHER" == "1000" || "$GOOD_WEATHER" == "1100" || "$GOOD_WEATHER" == "1101" || "$GOOD_WEATHERE" == "1102" || "$GOOD_WEATHERE" == "1001"]]; then
+          if [[ "$GOOD_WEATHER" == "1000" || "$GOOD_WEATHER" == "1100" || "$GOOD_WEATHER" == "1101" || "$GOOD_WEATHER" == "1102" || "$GOOD_WEATHER" == "1001" ]]; then
             echo "Good weather detected!"
             echo "send_notification=true" >> $GITHUB_ENV
           else
