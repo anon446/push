@@ -33,11 +33,17 @@ jobs:
 
       - name: Check Notification Preference
         run: |
-          if [ "$NOTIFICATIONS_ENABLED" = "true" ]; then
-            echo "Notifications are ENABLED"
-          else
-            echo "Notifications are DISABLED"
-          fi
+         curl -s https://raw.githubusercontent.com/anon446/push/main/config.json -o config.json
+         NOTIFICATIONS_ENABLED=$(jq -r '.notificationsEnabled' config.json)
+
+         if [ "$NOTIFICATIONS_ENABLED" = "true" ]; then
+         echo "Notifications are enabled"
+         echo "send_notification=true" >> $GITHUB_ENV
+         else
+         echo "Notifications are disabled"
+         echo "send_notification=false" >> $GITHUB_ENV
+         fi
+
 
 
       - name: Fetch Weather Data from Tomorrow.io
