@@ -31,6 +31,15 @@ jobs:
           fi
           echo "NOTIFICATIONS_ENABLED=$NOTIFICATIONS_ENABLED" >> $GITHUB_ENV
 
+      - name: Check Notification Preference
+        run: |
+          if [ "$NOTIFICATIONS_ENABLED" = "true" ]; then
+            echo "Notifications are ENABLED"
+          else
+            echo "Notifications are DISABLED"
+          fi
+
+
       - name: Fetch Weather Data from Tomorrow.io
         id: fetch_weather
         run: |
