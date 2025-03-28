@@ -24,7 +24,7 @@ jobs:
           response=$(curl -s "https://api.tomorrow.io/v4/weather/forecast?location="10.2833,123.9000"&apikey=${{ secrets.TOMORROW_IO_API_KEY }}")
           echo "$response" > weather.json
 
-      - name: Check for Severe Weather
+      - name: Check for Good Weather
         id: check_weather
         run: |
           GOOD_WEATHER=$(jq -r '.timelines.hourly | map(select(.values.weatherCode < 1000)) | length' weather.json)
@@ -33,7 +33,7 @@ jobs:
             echo "send_notification=true" >> $GITHUB_ENV
           else
             echo "No good weather detected."
-            echo "send_notification=false" >> $GITHUB_ENV
+            echo "send_notification=true" >> $GITHUB_ENV
           fi
 
       - name: Send Push Notification via FCM
