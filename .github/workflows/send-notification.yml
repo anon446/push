@@ -48,8 +48,16 @@ jobs:
       - name: Fetch Latest Location
         run: |
          curl -s https://raw.githubusercontent.com/anon446/push/main/location.json -o location.json
-         LAT=$(jq -r 'location.lat' location.json)
-         LON=$(jq -r 'location.lon' location.json)
+         if ! jq empty location.json 2>/dev/null; then
+         echo "Error: Invalid JSON format in location.json"
+         exit 1
+         fi
+         LAT=$(jq -r 'location.lat // empty' location.json)
+         LON=$(jq -r 'location.lon // empty' location.json)
+          if [[ -z "$LAT" || -z "$LON" ]]; then
+          echo "Error: Latitude or Longitude not found in location.json"
+          exit 1
+          fi
          echo "LAT=$LAT" >> $GITHUB_ENV
          echo "LON=$LON" >> $GITHUB_ENV
 
@@ -57,6 +65,11 @@ jobs:
         id: fetch_weather
         run: |
           response=$(curl -s "https://api.tomorrow.io/v4/weather/forecast?location=${{ env.LAT }},${{ env.LON }}&apikey=${{ secrets.TOMORROW_IO_API_KEY }}")
+
+          if [[ -z "$response" || "$response" == "null" ]]; then
+          echo "Error: Failed to fetch weather data"
+          exit 1
+          fi
           echo "$response" > weather.json
 
       - name: Check for Good Weather
