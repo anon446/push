@@ -1,8 +1,5 @@
-{
-  "notificationsEnabled": true,
-  "location": {
+"location": {
     "lat": 37.7749,
     "lon": -122.4194
-  }
 }
 
