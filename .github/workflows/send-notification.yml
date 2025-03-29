@@ -52,8 +52,8 @@ jobs:
          echo "Error: Invalid JSON format in location.json"
          exit 1
          fi
-         LAT=$(jq -r 'location.lat // empty' location.json)
-         LON=$(jq -r 'location.lon // empty' location.json)
+         LAT=$(jq -r '.lat' location.json)
+         LON=$(jq -r '.lon' location.json)
           if [[ -z "$LAT" || -z "$LON" ]]; then
           echo "Error: Latitude or Longitude not found in location.json"
           exit 1
