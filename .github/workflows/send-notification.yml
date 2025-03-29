@@ -48,15 +48,15 @@ jobs:
       - name: Fetch Latest Location
         run: |
          curl -s https://raw.githubusercontent.com/anon446/push/main/location.json -o location.json
-         LAT=$(jq -r '.lat' location.json)
-         LON=$(jq -r '.lon' location.json)
+         LAT=$(jq -r 'location.lat' location.json)
+         LON=$(jq -r 'location.lon' location.json)
          echo "LAT=$LAT" >> $GITHUB_ENV
          echo "LON=$LON" >> $GITHUB_ENV
 
       - name: Fetch Weather Data from Tomorrow.io
         id: fetch_weather
         run: |
-          response=$(curl -s "https://api.tomorrow.io/v4/weather/forecast?location=$LAT,$LON&apikey=${{ secrets.TOMORROW_IO_API_KEY }}")
+          response=$(curl -s "https://api.tomorrow.io/v4/weather/forecast?location=${{ env.LAT }},${{ env.LON }}&apikey=${{ secrets.TOMORROW_IO_API_KEY }}")
           echo "$response" > weather.json
 
       - name: Check for Good Weather
