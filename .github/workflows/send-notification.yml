@@ -21,15 +21,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Read Notification Preferences
-        id: check_preference
-        run: |
-          if [ -f notification_pref.txt ]; then
-            NOTIFICATIONS_ENABLED=$(cat notification_pref.txt)
-          else
-            NOTIFICATIONS_ENABLED="false"
-          fi
-          echo "NOTIFICATIONS_ENABLED=$NOTIFICATIONS_ENABLED" >> $GITHUB_ENV
+    
 
       - name: Check Notification Preference
         run: |
